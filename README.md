@@ -20,4 +20,4 @@
 ## 🚀 Quick Install
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/your-username/knock/main/install.sh | bash
+https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner.git
