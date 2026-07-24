@@ -1,4 +1,4 @@
-# KNOCK(Kali Network Offensive Comprehensive Kit) Ai-Accelerated Scanner
+# KNOCK(Kali Network Offensive Comprehensive Kit)                                 Ai-Accelerated Scanner
 
 
 [![Version](https://img.shields.io/badge/version-7.2-blue)](https://github.com/your-username/knock)
