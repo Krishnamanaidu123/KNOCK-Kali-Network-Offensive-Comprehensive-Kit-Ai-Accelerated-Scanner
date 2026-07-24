@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Linux
+*.tmp
+*.grep
+*.out
+/tmp/knock_cache
+
+# Editor
+*.swp
+*.swo
+*~
+*.log
+
+# Build
+*.o
+*.so
+*.pyc
