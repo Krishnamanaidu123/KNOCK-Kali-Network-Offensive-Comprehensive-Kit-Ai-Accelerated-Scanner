@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KNOCK – AI‑Accelerated Network Scanner</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Favicon (optional) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>" />
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="knock-icon">🔍</span>
+                <h1>KNOCK</h1>
+                <span class="tagline">Kali Network Offensive Comprehensive Kit</span>
+            </div>
+            <nav>
+                <a href="#features">Features</a>
+                <a href="#install">Install</a>
+                <a href="#usage">Usage</a>
+                <a href="https://github.com/your-username/knock" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-text">
+                <h2>AI‑Accelerated <span class="highlight">nmap</span> Wrapper</h2>
+                <p>Lightning‑fast port discovery with masscan, deep inspection with nmap – all in one tool.</p>
+                <div class="cta">
+                    <a href="#install" class="btn primary">Install Now</a>
+                    <a href="https://github.com/your-username/knock" class="btn secondary">View on GitHub</a>
+                </div>
+            </div>
+            <div class="hero-demo">
+                <pre><code>$ sudo KNOCK --ai -sV -O 10.0.2.11
+Starting KNOCK 7.99 ( https://knock.org ) at ...
+KNOCK scan report for 10.0.2.11
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1
+80/tcp open  http    Apache httpd 2.4.41</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Why KNOCK?</h2>
+            <div class="grid">
+                <div class="card">
+                    <span class="icon">⚡</span>
+                    <h3>10× Faster</h3>
+                    <p>Uses masscan to discover open ports in seconds, then nmap only on those ports.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🧠</span>
+                    <h3>AI‑Smart Mode</h3>
+                    <p>Auto‑tuning, caching, and adaptive timing for optimal performance.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🔧</span>
+                    <h3>Full nmap Compatibility</h3>
+                    <p>Every nmap flag works – you never lose functionality.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🎨</span>
+                    <h3>Coloured Output</h3>
+                    <p>Human‑readable, colour‑coded results for easy scanning.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="install" class="install">
+        <div class="container">
+            <h2>Installation</h2>
+            <div class="install-steps">
+                <h3>One‑Liner (Linux/macOS)</h3>
+                <pre><code>curl -sSL https://raw.githubusercontent.com/your-username/knock/main/install.sh | bash</code></pre>
+                <h3>Manual</h3>
+                <pre><code>git clone https://github.com/your-username/knock.git
+cd knock
+sudo cp knock.sh /usr/local/bin/KNOCK
+sudo chmod +x /usr/local/bin/KNOCK</code></pre>
+                <p><strong>Dependencies:</strong> nmap, masscan (optional, but recommended).</p>
+                <pre><code>sudo apt update && sudo apt install nmap masscan -y</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="usage" class="usage">
+        <div class="container">
+            <h2>Quick Usage</h2>
+            <div class="examples">
+                <div class="example">
+                    <h4>Standard nmap</h4>
+                    <pre><code>KNOCK -sS -sV -O 192.168.1.1</code></pre>
+                </div>
+                <div class="example">
+                    <h4>AI‑Accelerated</h4>
+                    <pre><code>sudo KNOCK --ai -sV -O 10.0.2.11</code></pre>
+                </div>
+                <div class="example">
+                    <h4>Ping Sweep</h4>
+                    <pre><code>KNOCK --ai -sn 10.0.0.0/24</code></pre>
+                </div>
+                <div class="example">
+                    <h4>Custom Masscan Rate</h4>
+                    <pre><code>sudo KNOCK --ai --masscan-rate 10000 -A example.com</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 KNOCK Project. Licensed under <a href="https://opensource.org/licenses/MIT">MIT</a>.</p>
+            <p>Built with ❤️ for the security community.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
