@@ -3,125 +3,556 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KNOCK – AI‑Accelerated Network Scanner</title>
-    <link rel="stylesheet" href="style.css" />
-    <!-- Favicon (optional) -->
+    <title>KNOCK – AI-Accelerated Network Scanner</title>
+    <meta name="description" content="KNOCK pairs masscan's speed with nmap's depth, plus adaptive tuning, for faster authorized network reconnaissance." />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0b0e14;
+            color: #e0e4ea;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid #58a6ff;
+            outline-offset: 2px;
+        }
+        .skip-link {
+            position: absolute;
+            left: -999px;
+            top: 0;
+            background: #58a6ff;
+            color: #0b0e14;
+            padding: 10px 16px;
+            border-radius: 0 0 6px 0;
+            z-index: 100;
+            font-weight: 600;
+        }
+        .skip-link:focus {
+            left: 0;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: #161b22;
+            padding: 1rem 0;
+            border-bottom: 1px solid #30363d;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .logo .knock-icon {
+            font-size: 2rem;
+        }
+        .logo h1 {
+            font-size: 1.8rem;
+            color: #58a6ff;
+        }
+        .logo .tagline {
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-left: 10px;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            color: #c9d1d9;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.2s ease;
+        }
+        nav a:first-child {
+            margin-left: 0;
+        }
+        nav a:hover,
+        nav a:focus-visible {
+            color: #58a6ff;
+        }
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+        .nav-toggle span {
+            width: 24px;
+            height: 2px;
+            background: #c9d1d9;
+            display: block;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 4rem 0;
+            background: linear-gradient(145deg, #0d1117 0%, #161b22 100%);
+        }
+        .hero .container {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        .hero-text {
+            flex: 1;
+            min-width: 280px;
+        }
+        .hero-text h2 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+        .hero-text .highlight {
+            color: #58a6ff;
+        }
+        .hero-text p {
+            font-size: 1.2rem;
+            color: #b1bac4;
+            margin-bottom: 2rem;
+        }
+        .cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+        .btn.primary {
+            background: #238636;
+            color: #fff;
+        }
+        .btn.primary:hover {
+            background: #2ea043;
+            transform: translateY(-1px);
+        }
+        .btn.secondary {
+            background: #30363d;
+            color: #c9d1d9;
+        }
+        .btn.secondary:hover {
+            background: #484f58;
+        }
+        .hero-demo {
+            flex: 1;
+            min-width: 280px;
+            background: #0d1117;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        .hero-demo pre {
+            margin: 0;
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            padding: 4rem 0;
+            background: #0d1117;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 2rem;
+            color: #f0f6fc;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: #161b22;
+            padding: 2rem 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #30363d;
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #58a6ff;
+        }
+        .card .icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: #f0f6fc;
+        }
+        .card p {
+            color: #b1bac4;
+            font-size: 0.95rem;
+        }
+
+        /* ===== INSTALL & USAGE ===== */
+        .install, .usage {
+            padding: 4rem 0;
+            background: #0d1117;
+            border-top: 1px solid #30363d;
+        }
+        .install h2, .usage h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 2rem;
+            color: #f0f6fc;
+        }
+        .install-steps, .examples {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .install-steps h3, .example h4 {
+            color: #58a6ff;
+            margin: 1.5rem 0 0.5rem;
+        }
+        .install-steps h3:first-child {
+            margin-top: 0;
+        }
+        .note {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        .scope-note {
+            text-align: center;
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+
+        /* ===== CODE BLOCKS + COPY BUTTON ===== */
+        pre {
+            position: relative;
+            background: #161b22;
+            padding: 1rem;
+            padding-right: 3.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+            border: 1px solid #30363d;
+        }
+        code {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            color: #f0f6fc;
+            font-size: 0.9rem;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #30363d;
+            color: #c9d1d9;
+            border: 1px solid #484f58;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .copy-btn:hover {
+            background: #484f58;
+            color: #f0f6fc;
+        }
+        .copy-btn.copied {
+            background: #238636;
+            color: #fff;
+            border-color: #238636;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #161b22;
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid #30363d;
+        }
+        footer a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        footer p {
+            color: #8b949e;
+            margin: 0.3rem 0;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+            nav {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+                padding-top: 0.75rem;
+            }
+            nav.open {
+                display: flex;
+            }
+            nav a {
+                margin-left: 0;
+            }
+            .hero .container {
+                flex-direction: column;
+            }
+            .hero-text h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- HEADER -->
     <header>
         <div class="container">
             <div class="logo">
-                <span class="knock-icon">🔍</span>
+                <span class="knock-icon" aria-hidden="true">🔍</span>
                 <h1>KNOCK</h1>
                 <span class="tagline">Kali Network Offensive Comprehensive Kit</span>
             </div>
-            <nav>
-                <a href="#features">Features</a>
-                <a href="#install">Install</a>
-                <a href="#usage">Usage</a>
-                <a href="https://github.com/your-username/knock" target="_blank">GitHub</a>
+            <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
+            <nav id="primaryNav">
+                <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner/blob/main/Features.md">Features</a>
+                <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner.git">Install</a>
+                <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner/blob/main/usage.md">Usage</a>
+                <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner/tree/main" target="_blank" rel="noopener noreferrer">GitHub</a>
             </nav>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="container">
-            <div class="hero-text">
-                <h2>AI‑Accelerated <span class="highlight">nmap</span> Wrapper</h2>
-                <p>Lightning‑fast port discovery with masscan, deep inspection with nmap – all in one tool.</p>
-                <div class="cta">
-                    <a href="#install" class="btn primary">Install Now</a>
-                    <a href="https://github.com/your-username/knock" class="btn secondary">View on GitHub</a>
+    <main id="main">
+        <!-- HERO -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-text">
+                    <h2>AI-Accelerated <span class="highlight">Network Scanning</span> Wrapper</h2>
+                    <p>Lightning-fast port discovery with masscan, deep inspection with nmap — all in one tool, for networks you're authorized to test.</p>
+                    <div class="cta">
+                        <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner.git" class="btn primary">Install Now</a>
+                        <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner" class="btn secondary" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                    </div>
                 </div>
-            </div>
-            <div class="hero-demo">
-                <pre><code>$ sudo KNOCK --ai -sV -O 10.0.2.11
-Starting KNOCK 7.99 ( https://knock.org ) at ...
+                <div class="hero-demo">
+                    <pre><code>$ sudo knock --ai -sV -O 10.0.2.11
+Starting KNOCK 7.99 ( https://knock.example ) at 2026-07-25
 KNOCK scan report for 10.0.2.11
 PORT   STATE SERVICE VERSION
 22/tcp open  ssh     OpenSSH 8.2p1
 80/tcp open  http    Apache httpd 2.4.41</code></pre>
-            </div>
-        </div>
-    </section>
-
-    <section id="features" class="features">
-        <div class="container">
-            <h2>Why KNOCK?</h2>
-            <div class="grid">
-                <div class="card">
-                    <span class="icon">⚡</span>
-                    <h3>10× Faster</h3>
-                    <p>Uses masscan to discover open ports in seconds, then nmap only on those ports.</p>
-                </div>
-                <div class="card">
-                    <span class="icon">🧠</span>
-                    <h3>AI‑Smart Mode</h3>
-                    <p>Auto‑tuning, caching, and adaptive timing for optimal performance.</p>
-                </div>
-                <div class="card">
-                    <span class="icon">🔧</span>
-                    <h3>Full nmap Compatibility</h3>
-                    <p>Every nmap flag works – you never lose functionality.</p>
-                </div>
-                <div class="card">
-                    <span class="icon">🎨</span>
-                    <h3>Coloured Output</h3>
-                    <p>Human‑readable, colour‑coded results for easy scanning.</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="install" class="install">
-        <div class="container">
-            <h2>Installation</h2>
-            <div class="install-steps">
-                <h3>One‑Liner (Linux/macOS)</h3>
-                <pre><code>curl -sSL https://raw.githubusercontent.com/your-username/knock/main/install.sh | bash</code></pre>
-                <h3>Manual</h3>
-                <pre><code>git clone https://github.com/your-username/knock.git
+        <!-- FEATURES -->
+        <section id="features" class="features">
+            <div class="container">
+                <h2>Why KNOCK?</h2>
+                <div class="grid">
+                    <div class="card">
+                        <span class="icon" aria-hidden="true">⚡</span>
+                        <h3>Faster discovery</h3>
+                        <p>Uses masscan to sweep for open ports in seconds, then runs nmap only against those ports.</p>
+                    </div>
+                    <div class="card">
+                        <span class="icon" aria-hidden="true">🧠</span>
+                        <h3>AI-smart mode</h3>
+                        <p>Auto-tuning, result caching, and adaptive timing to keep scans efficient.</p>
+                    </div>
+                    <div class="card">
+                        <span class="icon" aria-hidden="true">🔧</span>
+                        <h3>Full nmap compatibility</h3>
+                        <p>Every nmap flag still works — KNOCK adds speed, it doesn't take away control.</p>
+                    </div>
+                    <div class="card">
+                        <span class="icon" aria-hidden="true">🎨</span>
+                        <h3>Readable output</h3>
+                        <p>Colour-coded, human-friendly results that are easy to scan at a glance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSTALL -->
+        <section id="install" class="install">
+            <div class="container">
+                <h2>Installation</h2>
+                <div class="install-steps">
+                    <h3>One-liner (Linux/macOS)</h3>
+                    <p class="note">Review any install script before piping it into a shell — here's the direct source so you can check it first.</p>
+                    <pre><code>curl -sSL https://raw.githubusercontent.com/your-username/knock/main/install.sh -o install.sh
+less install.sh        # review it
+bash install.sh</code></pre>
+                    <h3>Manual</h3>
+                    <pre><code>git clone https://github.com/your-username/knock.git
 cd knock
-sudo cp knock.sh /usr/local/bin/KNOCK
-sudo chmod +x /usr/local/bin/KNOCK</code></pre>
-                <p><strong>Dependencies:</strong> nmap, masscan (optional, but recommended).</p>
-                <pre><code>sudo apt update && sudo apt install nmap masscan -y</code></pre>
-            </div>
-        </div>
-    </section>
-
-    <section id="usage" class="usage">
-        <div class="container">
-            <h2>Quick Usage</h2>
-            <div class="examples">
-                <div class="example">
-                    <h4>Standard nmap</h4>
-                    <pre><code>KNOCK -sS -sV -O 192.168.1.1</code></pre>
-                </div>
-                <div class="example">
-                    <h4>AI‑Accelerated</h4>
-                    <pre><code>sudo KNOCK --ai -sV -O 10.0.2.11</code></pre>
-                </div>
-                <div class="example">
-                    <h4>Ping Sweep</h4>
-                    <pre><code>KNOCK --ai -sn 10.0.0.0/24</code></pre>
-                </div>
-                <div class="example">
-                    <h4>Custom Masscan Rate</h4>
-                    <pre><code>sudo KNOCK --ai --masscan-rate 10000 -A example.com</code></pre>
+sudo cp knock.sh /usr/local/bin/knock
+sudo chmod +x /usr/local/bin/knock</code></pre>
+                    <p><strong>Dependencies:</strong> nmap, and masscan (optional, but recommended for the speed boost).</p>
+                    <pre><code>sudo apt update && sudo apt install nmap masscan -y</code></pre>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
+        <!-- USAGE -->
+        <section id="usage" class="usage">
+            <div class="container">
+                <h2>Quick usage</h2>
+                <div class="examples">
+                    <div class="example">
+                        <h4>Standard nmap</h4>
+                        <pre><code>knock -sS -sV -O 192.168.1.1</code></pre>
+                    </div>
+                    <div class="example">
+                        <h4>AI-accelerated</h4>
+                        <pre><code>sudo knock --ai -sV -O 10.0.2.11</code></pre>
+                    </div>
+                    <div class="example">
+                        <h4>Ping sweep</h4>
+                        <pre><code>knock --ai -sn 10.0.0.0/24</code></pre>
+                    </div>
+                    <div class="example">
+                        <h4>Custom masscan rate</h4>
+                        <pre><code>sudo knock --ai --masscan-rate 10000 -A example.com</code></pre>
+                    </div>
+                </div>
+                <p class="scope-note">KNOCK only scans hosts and ranges you own or have explicit written authorization to test.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
     <footer>
         <div class="container">
-            <p>&copy; 2026 KNOCK Project. Licensed under <a href="https://opensource.org/licenses/MIT">MIT</a>.</p>
-            <p>Built with ❤️ for the security community.</p>
+            <p>&copy; 2026 KNOCK Project. Licensed under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT</a>.</p>
+            <p>Built for the security community.</p>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile nav toggle
+            var toggle = document.getElementById('navToggle');
+            var nav = document.getElementById('primaryNav');
+
+            if (toggle && nav) {
+                toggle.addEventListener('click', function () {
+                    var isOpen = nav.classList.toggle('open');
+                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+
+                nav.querySelectorAll('a').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        nav.classList.remove('open');
+                        toggle.setAttribute('aria-expanded', 'false');
+                    });
+                });
+            }
+
+            // Copy-to-clipboard button on every code block
+            document.querySelectorAll('pre').forEach(function (pre) {
+                var btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.type = 'button';
+                btn.textContent = 'Copy';
+                btn.setAttribute('aria-label', 'Copy command to clipboard');
+                pre.appendChild(btn);
+
+                btn.addEventListener('click', function () {
+                    var code = pre.querySelector('code');
+                    var text = code ? code.innerText : pre.innerText;
+
+                    var finish = function () {
+                        btn.textContent = 'Copied!';
+                        btn.classList.add('copied');
+                        setTimeout(function () {
+                            btn.textContent = 'Copy';
+                            btn.classList.remove('copied');
+                        }, 1500);
+                    };
+
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(finish).catch(function () {
+                            fallbackCopy(text, finish);
+                        });
+                    } else {
+                        fallbackCopy(text, finish);
+                    }
+                });
+            });
+
+            function fallbackCopy(text, done) {
+                var textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    /* clipboard unavailable; silently ignore */
+                }
+                document.body.removeChild(textarea);
+                done();
+            }
+        });
+    </script>
+
 </body>
 </html>
