@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KNOCK – AI-Accelerated Network Scanner</title>
+    <meta name="description" content="KNOCK pairs masscan's speed with nmap's depth, plus adaptive tuning, for faster authorized network reconnaissance." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b0e14; color: #e0e4ea; line-height: 1.6; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        a:focus-visible, button:focus-visible { outline: 2px solid #58a6ff; outline-offset: 2px; }
+        .skip-link { position: absolute; left: -999px; top: 0; background: #58a6ff; color: #0b0e14; padding: 10px 16px; border-radius: 0 0 6px 0; z-index: 100; font-weight: 600; }
+        .skip-link:focus { left: 0; }
+
+        /* ===== HEADER ===== */
+        header { background: #161b22; padding: 1rem 0; border-bottom: 1px solid #30363d; position: sticky; top: 0; z-index: 20; }
+        header .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .logo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .logo .knock-icon { font-size: 2rem; }
+        .logo h1 { font-size: 1.8rem; color: #58a6ff; }
+        .logo .tagline { font-size: 0.9rem; color: #8b949e; margin-left: 10px; }
+        nav { display: flex; align-items: center; }
+        nav a { color: #c9d1d9; text-decoration: none; margin-left: 20px; transition: color 0.2s ease; }
+        nav a:first-child { margin-left: 0; }
+        nav a:hover, nav a:focus-visible { color: #58a6ff; }
+        .nav-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-toggle span { width: 24px; height: 2px; background: #c9d1d9; display: block; }
+
+        /* ===== HERO (without demo code) ===== */
+        .hero { padding: 4rem 0; background: linear-gradient(145deg, #0d1117 0%, #161b22 100%); text-align: center; }
+        .hero .container { max-width: 800px; }
+        .hero-text h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 1rem; line-height: 1.15; }
+        .hero-text .highlight { color: #58a6ff; }
+        .hero-text p { font-size: 1.2rem; color: #b1bac4; margin-bottom: 2rem; }
+        .cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 0.8rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: background 0.2s ease, transform 0.2s ease; display: inline-block; }
+        .btn.primary { background: #238636; color: #fff; }
+        .btn.primary:hover { background: #2ea043; transform: translateY(-1px); }
+        .btn.secondary { background: #30363d; color: #c9d1d9; }
+        .btn.secondary:hover { background: #484f58; }
+
+        /* ===== SECTIONS ===== */
+        .section-page { padding: 4rem 0; background: #0d1117; border-top: 1px solid #30363d; }
+        .section-page:first-of-type { border-top: none; }
+        .section-page h2 { text-align: center; font-size: 2.4rem; margin-bottom: 2rem; color: #f0f6fc; }
+        .section-page .content { max-width: 900px; margin: 0 auto; }
+        .section-page .content h3 { color: #58a6ff; margin-top: 2rem; margin-bottom: 0.5rem; }
+        .section-page .content h4 { color: #c9d1d9; margin-top: 1.5rem; margin-bottom: 0.3rem; font-weight: 600; }
+        .section-page .content ul, .section-page .content p, .section-page .content ol { color: #b1bac4; }
+        .section-page .content ul ul { margin-left: 1.5rem; }
+        .section-page .content table { width: 100%; border-collapse: collapse; margin: 1rem 0; background: #161b22; border-radius: 6px; overflow: hidden; }
+        .section-page .content th, .section-page .content td { padding: 0.75rem; border: 1px solid #30363d; text-align: left; }
+        .section-page .content th { background: #0d1117; color: #f0f6fc; font-weight: 600; }
+        .section-page .content td { color: #c9d1d9; }
+        .section-page .content .note { color: #8b949e; font-size: 0.9rem; margin-bottom: 0.25rem; }
+
+        /* ===== CODE BLOCKS (clear, minimal) ===== */
+        pre { position: relative; background: #161b22; padding: 1rem; padding-right: 3.5rem; border-radius: 6px; overflow-x: auto; margin: 0.5rem 0; border: 1px solid #30363d; }
+        code { font-family: 'Fira Code', 'Consolas', monospace; color: #f0f6fc; font-size: 0.9rem; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #30363d; color: #c9d1d9; border: 1px solid #484f58; border-radius: 4px; font-size: 0.75rem; padding: 0.3rem 0.6rem; cursor: pointer; transition: background 0.2s ease, color 0.2s ease; }
+        .copy-btn:hover { background: #484f58; color: #f0f6fc; }
+        .copy-btn.copied { background: #238636; color: #fff; border-color: #238636; }
+
+        /* ===== FOOTER ===== */
+        footer { background: #161b22; padding: 2rem 0; text-align: center; border-top: 1px solid #30363d; }
+        footer a { color: #58a6ff; text-decoration: none; }
+        footer p { color: #8b949e; margin: 0.3rem 0; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-toggle { display: flex; }
+            nav { display: none; width: 100%; flex-direction: column; align-items: flex-start; gap: 0.75rem; padding-top: 0.75rem; }
+            nav.open { display: flex; }
+            nav a { margin-left: 0; }
+            .hero-text h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="knock-icon" aria-hidden="true">🔍</span>
+                <h1>KNOCK</h1>
+                <span class="tagline">Kali Network Offensive Comprehensive Kit</span>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
+            <nav id="primaryNav">
+                <a href="#features">Features</a>
+                <a href="#install">Install</a>
+                <a href="#usage">Usage</a>
+                <a href="#github">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <!-- HERO (no demo) -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-text">
+                    <h2>AI‑Accelerated  <span class="highlight"> Scanning </span> Wrapper </h2>
+                    <p>Lightning-fast port discovery with masscan, deep inspection with nmap — all in one tool, for networks you're authorized to test.</p>
+                    <div class="cta">
+                        <a href="#install" class="btn primary">Install Now</a>
+                        <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner" class="btn secondary" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+        <!-- FEATURES -->
+        <section id="features" class="section-page">
+            <div class="container">
+                <div class="content">
+                    <h2>Features</h2>
+                    <p><strong>KNOCK</strong> (Kali Network Offensive Comprehensive Kit) is a complete network reconnaissance and security auditing suite that combines the speed of masscan and the depth of nmap.</p>
+
+                    <h3>🤖 AI‑Accelerated Mode</h3>
+                    <ul>
+                        <li><strong><code>--ai</code> flag</strong> enables intelligent scanning:
+                            <ul>
+                                <li><strong>masscan</strong> discovers open ports in seconds (even on all 65535 ports)</li>
+                                <li><strong>nmap</strong> then runs <strong>only on open ports</strong> for deep service/version/OS detection</li>
+                                <li><strong>Caching</strong> – results are cached for 5 minutes; re‑scanning the same target is instant</li>
+                                <li><strong>Localhost optimisation</strong> – skips masscan on loopback (faster)</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3>⚡ Blazing Speed</h3>
+                    <ul>
+                        <li><strong>10× faster</strong> than plain nmap (masscan can send 5,000–10,000 packets per second)</li>
+                        <li><strong>Parallel scanning</strong> – automatically uses all CPU cores</li>
+                        <li><strong>Adaptive timing</strong> – starts aggressive (<code>-T4</code>), backs off if packets are dropped</li>
+                    </ul>
+
+                    <h3>🔧 Full nmap Compatibility</h3>
+                    <ul>
+                        <li><strong>Every nmap flag works</strong> – you never lose functionality:
+                            <ul>
+                                <li>All scan types: <code>-sS</code>, <code>-sT</code>, <code>-sU</code>, <code>-sN</code>, <code>-sF</code>, <code>-sX</code>, <code>-sA</code>, <code>-sW</code>, <code>-sM</code>, <code>-sI</code>, <code>-sO</code>, <code>-b</code>, etc.</li>
+                                <li>All discovery options: <code>-sn</code>, <code>-Pn</code>, <code>-PS/PA/PU/PY</code>, <code>-PE/PP/PM</code>, <code>-PO</code>, <code>-n/-R</code>, <code>--dns-servers</code>, <code>--traceroute</code></li>
+                                <li>All output formats: <code>-oN</code>, <code>-oX</code>, <code>-oJ</code>, <code>-oG</code>, <code>-oA</code>, <code>-v</code>, <code>-d</code>, etc.</li>
+                                <li>Script scanning: <code>-sC</code>, <code>--script</code>, <code>--script-args</code>, etc.</li>
+                                <li>OS detection: <code>-O</code>, <code>--osscan-limit</code>, <code>--osscan-guess</code></li>
+                                <li>Evasion: <code>-f</code>, <code>--mtu</code>, <code>-D</code>, <code>-S</code>, <code>-e</code>, <code>-g</code>, <code>--data-length</code>, <code>--badsum</code></li>
+                                <li>Performance: <code>-T</code>, <code>--min-rate</code>, <code>--max-rate</code>, <code>--scan-delay</code>, <code>--max-retries</code>, <code>--host-timeout</code></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3>🎨 Colourful, Human‑Readable Output</h3>
+                    <ul>
+                        <li><strong>Port states</strong> are colour‑coded:
+                            <ul>
+                                <li>🟢 <strong>OPEN</strong> – green</li>
+                                <li>🔴 <strong>CLOSED</strong> – red</li>
+                                <li>🟡 <strong>FILTERED</strong> – yellow</li>
+                                <li>🔵 <strong>UNFILTERED</strong> – blue</li>
+                            </ul>
+                        </li>
+                        <li><strong>Logo</strong> displayed in blue with white subtitles</li>
+                        <li><strong>Help text</strong> uses multiple colours for easy reading</li>
+                        <li><strong>Custom branding</strong> – output shows <code>Starting KNOCK</code> and <code>https://knock.org</code></li>
+                    </ul>
+
+                    <h3>💾 Smart Caching</h3>
+                    <ul>
+                        <li><strong>5‑minute cache</strong> – re‑scanning the same target within 5 minutes skips masscan</li>
+                        <li><strong>Cache key</strong> based on target + port specification</li>
+                        <li><strong><code>--no-cache</code></strong> option to disable caching</li>
+                    </ul>
+
+                    <h3>🖥️ Localhost Optimisation</h3>
+                    <ul>
+                        <li>Automatically detects <code>127.0.0.1</code> or <code>localhost</code></li>
+                        <li>Skips masscan (which is slow on loopback) and uses nmap directly</li>
+                        <li><strong>Saves time</strong> when testing locally</li>
+                    </ul>
+
+                    <h3>🔄 Parallel Processing</h3>
+                    <ul>
+                        <li><strong>Auto‑CPU cores</strong> – uses all available cores by default</li>
+                        <li><strong>Manual control</strong> with <code>-j, --jobs N</code></li>
+                        <li><strong>Progress indication</strong> when running multiple targets</li>
+                    </ul>
+
+                    <h3>🛡️ Root Privilege Checking</h3>
+                    <ul>
+                        <li>Automatically detects when root is required (raw packet scans, AI mode)</li>
+                        <li>Displays a clear error message with the correct <code>sudo</code> command</li>
+                        <li><strong>Prevents</strong> "Operation not permitted" errors</li>
+                    </ul>
+
+                    <h3>📦 Additional Capabilities</h3>
+                    <table>
+                        <thead><tr><th>Category</th><th>Features</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Target Specification</strong></td><td>Hostnames, IPs, CIDR, ranges, <code>-iL</code> file input, <code>-iR</code> random targets, <code>--exclude</code>, <code>--excludefile</code></td></tr>
+                            <tr><td><strong>Port Specification</strong></td><td><code>-p</code> (single, ranges, protocols), <code>--top-ports</code>, <code>-F</code> (fast), <code>-r</code> (sequential), <code>--exclude-ports</code></td></tr>
+                            <tr><td><strong>Service/Version Detection</strong></td><td><code>-sV</code>, <code>--version-intensity</code>, <code>--version-light</code>, <code>--version-all</code>, <code>--version-trace</code></td></tr>
+                            <tr><td><strong>Script Scanning</strong></td><td><code>-sC</code> (default scripts), <code>--script</code> (custom), <code>--script-args</code>, <code>--script-args-file</code>, <code>--script-trace</code>, <code>--script-updatedb</code>, <code>--script-help</code></td></tr>
+                            <tr><td><strong>OS Detection</strong></td><td><code>-O</code>, <code>--osscan-limit</code>, <code>--osscan-guess</code></td></tr>
+                            <tr><td><strong>Firewall/IDS Evasion</strong></td><td><code>-f</code>, <code>--mtu</code>, <code>-D</code>, <code>-S</code>, <code>-e</code>, <code>-g</code>, <code>--proxies</code>, <code>--data</code>, <code>--data-string</code>, <code>--data-length</code>, <code>--ip-options</code>, <code>--ttl</code>, <code>--spoof-mac</code>, <code>--badsum</code></td></tr>
+                            <tr><td><strong>Output</strong></td><td><code>-oN</code>, <code>-oX</code>, <code>-oS</code>, <code>-oG</code>, <code>-oA</code>, <code>-v</code>, <code>-d</code>, <code>--reason</code>, <code>--open</code>, <code>--packet-trace</code>, <code>--iflist</code>, <code>--append-output</code>, <code>--resume</code>, <code>--stylesheet</code>, <code>--webxml</code>, <code>--no-stylesheet</code></td></tr>
+                            <tr><td><strong>Misc</strong></td><td><code>-6</code> (IPv6), <code>-A</code> (aggressive), <code>--datadir</code>, <code>--send-eth</code>, <code>--send-ip</code>, <code>--privileged</code>, <code>--unprivileged</code>, <code>-V</code> (version), <code>-h</code> (help)</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>⚙️ KNOCK‑Specific Options</h3>
+                    <table>
+                        <thead><tr><th>Option</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>--ai</code>, <code>--smart</code></td><td>Enable AI‑accelerated mode (masscan + nmap)</td></tr>
+                            <tr><td><code>--no-cache</code></td><td>Disable result caching (only with <code>--ai</code>)</td></tr>
+                            <tr><td><code>--masscan-rate N</code></td><td>Set masscan packet rate (default: 5000)</td></tr>
+                            <tr><td><code>--no-logo</code></td><td>Suppress the ASCII logo</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSTALL -->
+        <section id="install" class="section-page">
+            <div class="container">
+                <div class="content">
+                    <h2>Installation</h2>
+                    <p>Get KNOCK up and running in minutes.</p>
+
+                    <h3>One‑Liner (Linux / macOS)</h3>
+                    <p class="note">Review any install script before piping it into a shell — check the source first.</p>
+                    <pre><code>curl -sSL https://raw.githubusercontent.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner/main/install.sh -o install.sh
+less install.sh        # review it
+bash install.sh</code></pre>
+
+                    <h3>Manual</h3>
+                    <pre><code>git clone https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner.git
+cd KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner
+sudo cp knock.sh /usr/local/bin/knock
+sudo chmod +x /usr/local/bin/knock</code></pre>
+
+                    <h3>Dependencies</h3>
+                    <p><strong>nmap</strong> is required; <strong>masscan</strong> is strongly recommended for the speed boost.</p>
+                    <pre><code>sudo apt update && sudo apt install nmap masscan -y</code></pre>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- USAGE -->
+        <section id="usage" class="section-page">
+            <div class="container">
+                <div class="content">
+                    <h2>Usage Guide</h2>
+                    <p>This guide covers everything you need to know to use <strong>KNOCK</strong> effectively.</p>
+
+                    <h3>🚀 Basic Syntax</h3>
+                    <pre><code>KNOCK [--ai] [options] &lt;target(s)&gt;</code></pre>
+                    <ul>
+                        <li><strong>Without <code>--ai</code></strong> – KNOCK behaves exactly like <code>nmap</code> (all flags work).</li>
+                        <li><strong>With <code>--ai</code></strong> – KNOCK uses masscan for fast port discovery, then runs nmap on open ports.</li>
+                    </ul>
+
+                    <h3>🧠 AI Mode – The Smart Way</h3>
+                    <p><code>--ai</code> dramatically speeds up scans by first discovering open ports with masscan, then running nmap only on those ports.</p>
+                    <pre><code>sudo KNOCK --ai -sV -O 10.0.2.11</code></pre>
+                    <p><strong>What happens under the hood:</strong></p>
+                    <ol>
+                        <li><strong>masscan</strong> scans the target (default: top 1000 ports) at high speed.</li>
+                        <li>Open ports are <strong>cached</strong> for 5 minutes.</li>
+                        <li><strong>nmap</strong> runs with your options <strong>only on open ports</strong>.</li>
+                        <li>Results are displayed with KNOCK branding.</li>
+                    </ol>
+                    <p><strong>Note:</strong> AI mode requires <code>sudo</code> because masscan uses raw packets.</p>
+
+                    <h3>⚙️ KNOCK‑Specific Options</h3>
+                    <table>
+                        <thead><tr><th>Option</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>--ai</code>, <code>--smart</code></td><td>Enable AI mode (masscan + nmap)</td></tr>
+                            <tr><td><code>--no-cache</code></td><td>Disable caching (forces a fresh masscan)</td></tr>
+                            <tr><td><code>--masscan-rate N</code></td><td>Set masscan packet rate (default: 5000)</td></tr>
+                            <tr><td><code>--no-logo</code></td><td>Suppress the ASCII logo</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>📌 Common Use Cases</h3>
+                    <h4>1. Quick port scan with service detection</h4>
+                    <pre><code>sudo KNOCK --ai -sV 10.0.2.11</code></pre>
+                    <h4>2. Full aggressive scan with OS detection</h4>
+                    <pre><code>sudo KNOCK --ai -A -O 10.0.2.11</code></pre>
+                    <h4>3. Scan specific ports</h4>
+                    <pre><code>sudo KNOCK --ai -p 22,80,443 -sV 10.0.2.11</code></pre>
+                    <h4>4. Scan top 100 ports (even faster)</h4>
+                    <pre><code>sudo KNOCK --ai --top-ports 100 -sV 10.0.2.11</code></pre>
+                    <h4>5. Ping sweep (host discovery)</h4>
+                    <pre><code>KNOCK --ai -sn 10.0.0.0/24</code></pre>
+                    <h4>6. Scan a whole subnet for open ports (parallel)</h4>
+                    <pre><code>sudo KNOCK --ai -sV 10.0.2.0/24 -j 8</code></pre>
+                    <h4>7. Save results in JSON format</h4>
+                    <pre><code>sudo KNOCK --ai -sV -oJ scan.json 10.0.2.11</code></pre>
+                    <h4>8. Use NSE scripts with AI mode</h4>
+                    <pre><code>sudo KNOCK --ai -sC --script=http-title,ssh-brute 10.0.2.11</code></pre>
+                    <h4>9. Stealth scan with evasion</h4>
+                    <pre><code>sudo KNOCK --ai -sS -f --data-length 200 -D 10.0.2.1 10.0.2.11</code></pre>
+                    <h4>10. Increase masscan rate for even faster scans</h4>
+                    <pre><code>sudo KNOCK --ai --masscan-rate 10000 -sV 10.0.2.11</code></pre>
+
+                    <h3>🎯 Full nmap Options (All Supported)</h3>
+                    <table>
+                        <thead><tr><th>Category</th><th>Common Flags</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Scan techniques</strong></td><td><code>-sS</code>, <code>-sT</code>, <code>-sU</code>, <code>-sN</code>, <code>-sF</code>, <code>-sX</code>, <code>-sA</code>, <code>-sW</code>, <code>-sM</code>, <code>-sI</code>, <code>-sO</code>, <code>-b</code></td></tr>
+                            <tr><td><strong>Host discovery</strong></td><td><code>-sn</code>, <code>-Pn</code>, <code>-PS/PA/PU/PY</code>, <code>-PE/PP/PM</code>, <code>-PO</code>, <code>-n/-R</code>, <code>--dns-servers</code>, <code>--traceroute</code></td></tr>
+                            <tr><td><strong>Port specification</strong></td><td><code>-p</code>, <code>--top-ports</code>, <code>-F</code>, <code>-r</code>, <code>--exclude-ports</code></td></tr>
+                            <tr><td><strong>Service/version</strong></td><td><code>-sV</code>, <code>--version-intensity</code>, <code>--version-light</code>, <code>--version-all</code></td></tr>
+                            <tr><td><strong>Script scan</strong></td><td><code>-sC</code>, <code>--script</code>, <code>--script-args</code>, <code>--script-trace</code></td></tr>
+                            <tr><td><strong>OS detection</strong></td><td><code>-O</code>, <code>--osscan-limit</code>, <code>--osscan-guess</code></td></tr>
+                            <tr><td><strong>Evasion</strong></td><td><code>-f</code>, <code>--mtu</code>, <code>-D</code>, <code>-S</code>, <code>-e</code>, <code>-g</code>, <code>--data-length</code>, <code>--badsum</code></td></tr>
+                            <tr><td><strong>Performance</strong></td><td><code>-T</code>, <code>--min-rate</code>, <code>--max-rate</code>, <code>--scan-delay</code>, <code>--max-retries</code>, <code>--host-timeout</code></td></tr>
+                            <tr><td><strong>Output</strong></td><td><code>-oN</code>, <code>-oX</code>, <code>-oJ</code>, <code>-oG</code>, <code>-oA</code>, <code>-v</code>, <code>-d</code>, <code>--reason</code>, <code>--open</code>, <code>--resume</code></td></tr>
+                            <tr><td><strong>Misc</strong></td><td><code>-6</code>, <code>-A</code>, <code>--privileged</code>, <code>--unprivileged</code>, <code>-V</code></td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>❓ Troubleshooting</h3>
+                    <table>
+                        <thead><tr><th>Problem</th><th>Solution</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>Operation not permitted</code></td><td>Run with <code>sudo</code> (raw packets need root)</td></tr>
+                            <tr><td><code>masscan: command not found</code></td><td>Install masscan: <code>sudo apt install masscan</code></td></tr>
+                            <tr><td><code>KNOCK: command not found</code></td><td>Use full path: <code>/usr/local/bin/knock</code> or add to PATH</td></tr>
+                            <tr><td>Scan is slow</td><td>Increase masscan rate with <code>--masscan-rate 10000</code></td></tr>
+                            <tr><td>No open ports found</td><td>Target might be down; try <code>--no-ping</code> or check your network</td></tr>
+                            <tr><td>Cache not working</td><td>Use <code>--no-cache</code> to force a fresh scan</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+<!-- GITHUB -->
+<section id="github" class="section-page">
+    <div class="container">
+        <div class="content" style="text-align: center;">
+            <h2>GitHub Repository</h2>
+
+            <!-- Updated description text -->
+            <p style="color: #b1bac4; margin-top: 1.5rem;">Click the button below to visit the repository on GitHub.</p>
+
+            <p style="margin-top: 2rem;">
+                <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner" target="_blank" rel="noopener noreferrer" class="btn primary">
+                    Open GitHub →
+                </a>
+            </p>
+        </div>
+    </div>
+</section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 KNOCK Project. Licensed under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT</a>.</p>
+            <p>Built for the security community.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile nav toggle
+            var toggle = document.getElementById('navToggle');
+            var nav = document.getElementById('primaryNav');
+            if (toggle && nav) {
+                toggle.addEventListener('click', function () {
+                    var isOpen = nav.classList.toggle('open');
+                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+                nav.querySelectorAll('a').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        nav.classList.remove('open');
+                        toggle.setAttribute('aria-expanded', 'false');
+                    });
+                });
+            }
+
+            // Copy-to-clipboard on every code block
+            document.querySelectorAll('pre').forEach(function (pre) {
+                var btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.type = 'button';
+                btn.textContent = 'Copy';
+                btn.setAttribute('aria-label', 'Copy code to clipboard');
+                pre.appendChild(btn);
+
+                btn.addEventListener('click', function () {
+                    var code = pre.querySelector('code');
+                    var text = code ? code.innerText : pre.innerText;
+
+                    var finish = function () {
+                        btn.textContent = 'Copied!';
+                        btn.classList.add('copied');
+                        setTimeout(function () {
+                            btn.textContent = 'Copy';
+                            btn.classList.remove('copied');
+                        }, 1500);
+                    };
+
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(finish).catch(function () {
+                            fallbackCopy(text, finish);
+                        });
+                    } else {
+                        fallbackCopy(text, finish);
+                    }
+                });
+            });
+
+            function fallbackCopy(text, done) {
+                var textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    /* clipboard unavailable; silently ignore */
+                }
+                document.body.removeChild(textarea);
+                done();
+            }
+        });
+    </script>
+
+</body>
+</html>
