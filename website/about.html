@@ -11,333 +11,74 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0b0e14;
-            color: #e0e4ea;
-            line-height: 1.6;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b0e14; color: #e0e4ea; line-height: 1.6; }
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         a:focus-visible { outline: 2px solid #58a6ff; outline-offset: 2px; }
-        .skip-link {
-            position: absolute; left: -999px; top: 0;
-            background: #58a6ff; color: #0b0e14; padding: 10px 16px;
-            border-radius: 0 0 6px 0; z-index: 100; font-weight: 600;
-        }
+        .skip-link { position: absolute; left: -999px; top: 0; background: #58a6ff; color: #0b0e14; padding: 10px 16px; border-radius: 0 0 6px 0; z-index: 100; font-weight: 600; }
         .skip-link:focus { left: 0; }
 
         /* ===== HEADER ===== */
-        header {
-            background: #161b22;
-            padding: 1rem 0;
-            border-bottom: 1px solid #30363d;
-            position: sticky; top: 0; z-index: 20;
-            backdrop-filter: blur(8px);
-        }
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        header { background: #161b22; padding: 1rem 0; border-bottom: 1px solid #30363d; position: sticky; top: 0; z-index: 20; }
+        header .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .logo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .logo .knock-icon { font-size: 2rem; }
         .logo h1 { font-size: 1.8rem; color: #58a6ff; }
-        .logo .tagline {
-            font-size: 0.9rem;
-            color: #8b949e;
-            margin-left: 10px;
-        }
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        nav a {
-            color: #c9d1d9;
-            text-decoration: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            transition: background 0.2s, color 0.2s;
-        }
-        nav a:hover,
-        nav a:focus-visible {
-            background: #30363d;
-            color: #58a6ff;
-        }
-        .nav-toggle {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-        }
-        .nav-toggle span {
-            width: 24px;
-            height: 2px;
-            background: #c9d1d9;
-            display: block;
-            transition: 0.2s;
-        }
+        .logo .tagline { font-size: 0.9rem; color: #8b949e; margin-left: 10px; }
+        nav { display: flex; align-items: center; }
+        nav a { color: #c9d1d9; text-decoration: none; margin-left: 20px; transition: color 0.2s ease; }
+        nav a:first-child { margin-left: 0; }
+        nav a:hover, nav a:focus-visible { color: #58a6ff; }
+        .nav-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-toggle span { width: 24px; height: 2px; background: #c9d1d9; display: block; }
 
-        /* ===== HERO ===== */
-        .hero {
-            padding: 5rem 0;
-            background: linear-gradient(145deg, #0d1117 0%, #161b22 100%);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 50%, rgba(88,166,255,0.06) 0%, transparent 60%);
-            animation: pulseGlow 8s ease-in-out infinite alternate;
-        }
-        @keyframes pulseGlow {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(10%, 10%) scale(1.2); }
-        }
-        .hero .container {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-        }
-        .hero-text h2 {
-            font-size: clamp(2.2rem, 5vw, 3.2rem);
-            margin-bottom: 1rem;
-            line-height: 1.15;
-        }
-        .hero-text .highlight {
-            color: #58a6ff;
-            background: linear-gradient(120deg, #58a6ff, #7b9eff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-text p {
-            font-size: 1.2rem;
-            color: #b1bac4;
-            margin-bottom: 2rem;
-        }
-        .cta {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .btn {
-            padding: 0.8rem 2rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-            display: inline-block;
-        }
-        .btn.primary {
-            background: #238636;
-            color: #fff;
-            box-shadow: 0 0 0 1px #238636;
-        }
-        .btn.primary:hover {
-            background: #2ea043;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(35,134,54,0.4);
-        }
-        .btn.secondary {
-            background: #30363d;
-            color: #c9d1d9;
-            box-shadow: 0 0 0 1px #30363d;
-        }
-        .btn.secondary:hover {
-            background: #484f58;
-            transform: translateY(-2px);
-        }
+        /* ===== HERO (without demo code) ===== */
+        .hero { padding: 4rem 0; background: linear-gradient(145deg, #0d1117 0%, #161b22 100%); text-align: center; }
+        .hero .container { max-width: 800px; }
+        .hero-text h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 1rem; line-height: 1.15; }
+        .hero-text .highlight { color: #58a6ff; }
+        .hero-text p { font-size: 1.2rem; color: #b1bac4; margin-bottom: 2rem; }
+        .cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 0.8rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: background 0.2s ease, transform 0.2s ease; display: inline-block; }
+        .btn.primary { background: #238636; color: #fff; }
+        .btn.primary:hover { background: #2ea043; transform: translateY(-1px); }
+        .btn.secondary { background: #30363d; color: #c9d1d9; }
+        .btn.secondary:hover { background: #484f58; }
 
         /* ===== SECTIONS ===== */
-        .section-page {
-            padding: 4rem 0;
-            background: #0d1117;
-            border-top: 1px solid #30363d;
-        }
+        .section-page { padding: 4rem 0; background: #0d1117; border-top: 1px solid #30363d; }
         .section-page:first-of-type { border-top: none; }
-        .section-page h2 {
-            text-align: center;
-            font-size: 2.4rem;
-            margin-bottom: 2rem;
-            color: #f0f6fc;
-            position: relative;
-        }
-        .section-page h2::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: #58a6ff;
-            margin: 0.5rem auto 0;
-            border-radius: 2px;
-        }
-        .section-page .content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .section-page .content h3 {
-            color: #58a6ff;
-            margin-top: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        .section-page .content h4 {
-            color: #c9d1d9;
-            margin-top: 1.5rem;
-            margin-bottom: 0.3rem;
-            font-weight: 600;
-        }
-        .section-page .content ul,
-        .section-page .content p,
-        .section-page .content ol {
-            color: #b1bac4;
-        }
+        .section-page h2 { text-align: center; font-size: 2.4rem; margin-bottom: 2rem; color: #f0f6fc; }
+        .section-page .content { max-width: 900px; margin: 0 auto; }
+        .section-page .content h3 { color: #58a6ff; margin-top: 2rem; margin-bottom: 0.5rem; }
+        .section-page .content h4 { color: #c9d1d9; margin-top: 1.5rem; margin-bottom: 0.3rem; font-weight: 600; }
+        .section-page .content ul, .section-page .content p, .section-page .content ol { color: #b1bac4; }
         .section-page .content ul ul { margin-left: 1.5rem; }
-        .section-page .content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            background: #161b22;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .section-page .content th,
-        .section-page .content td {
-            padding: 0.75rem;
-            border: 1px solid #30363d;
-            text-align: left;
-        }
-        .section-page .content th {
-            background: #0d1117;
-            color: #f0f6fc;
-            font-weight: 600;
-        }
+        .section-page .content table { width: 100%; border-collapse: collapse; margin: 1rem 0; background: #161b22; border-radius: 6px; overflow: hidden; }
+        .section-page .content th, .section-page .content td { padding: 0.75rem; border: 1px solid #30363d; text-align: left; }
+        .section-page .content th { background: #0d1117; color: #f0f6fc; font-weight: 600; }
         .section-page .content td { color: #c9d1d9; }
-        .section-page .content .note {
-            color: #8b949e;
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
+        .section-page .content .note { color: #8b949e; font-size: 0.9rem; margin-bottom: 0.25rem; }
 
-        /* ===== CODE BLOCKS ===== */
-        pre {
-            position: relative;
-            background: #161b22;
-            padding: 1rem;
-            padding-right: 3.5rem;
-            border-radius: 6px;
-            overflow-x: auto;
-            margin: 0.5rem 0;
-            border: 1px solid #30363d;
-        }
-        code {
-            font-family: 'Fira Code', 'Consolas', monospace;
-            color: #f0f6fc;
-            font-size: 0.9rem;
-        }
-        .copy-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: #30363d;
-            color: #c9d1d9;
-            border: 1px solid #484f58;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            padding: 0.3rem 0.6rem;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-        .copy-btn:hover {
-            background: #484f58;
-            color: #f0f6fc;
-        }
-        .copy-btn.copied {
-            background: #238636;
-            color: #fff;
-            border-color: #238636;
-        }
+        /* ===== CODE BLOCKS (clear, minimal) ===== */
+        pre { position: relative; background: #161b22; padding: 1rem; padding-right: 3.5rem; border-radius: 6px; overflow-x: auto; margin: 0.5rem 0; border: 1px solid #30363d; }
+        code { font-family: 'Fira Code', 'Consolas', monospace; color: #f0f6fc; font-size: 0.9rem; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #30363d; color: #c9d1d9; border: 1px solid #484f58; border-radius: 4px; font-size: 0.75rem; padding: 0.3rem 0.6rem; cursor: pointer; transition: background 0.2s ease, color 0.2s ease; }
+        .copy-btn:hover { background: #484f58; color: #f0f6fc; }
+        .copy-btn.copied { background: #238636; color: #fff; border-color: #238636; }
 
-        /* ===== CONTRIBUTING & FOOTER ===== */
-        .contributing {
-            background: #0d1117;
-            border-top: 1px solid #30363d;
-        }
-        .contributing .content {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .contributing .content a {
-            color: #58a6ff;
-            text-decoration: none;
-        }
-        .contributing .content a:hover {
-            text-decoration: underline;
-        }
-
-        footer {
-            background: #161b22;
-            padding: 2rem 0;
-            text-align: center;
-            border-top: 1px solid #30363d;
-        }
-        footer .social {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        footer .social a {
-            color: #8b949e;
-            font-size: 1.2rem;
-            transition: color 0.2s;
-        }
-        footer .social a:hover {
-            color: #58a6ff;
-        }
+        /* ===== FOOTER ===== */
+        footer { background: #161b22; padding: 2rem 0; text-align: center; border-top: 1px solid #30363d; }
         footer a { color: #58a6ff; text-decoration: none; }
         footer p { color: #8b949e; margin: 0.3rem 0; }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .nav-toggle { display: flex; }
-            nav {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.5rem;
-                padding-top: 0.75rem;
-            }
+            nav { display: none; width: 100%; flex-direction: column; align-items: flex-start; gap: 0.75rem; padding-top: 0.75rem; }
             nav.open { display: flex; }
-            nav a {
-                margin-left: 0;
-                padding: 0.6rem 0.8rem;
-                text-align: center;
-                border-radius: 6px;
-                background: #0d1117;
-            }
-            nav a:hover { background: #30363d; }
+            nav a { margin-left: 0; }
+            .hero .container { flex-direction: column; }
             .hero-text h2 { font-size: 2rem; }
-            .hero { padding: 3rem 0; }
         }
     </style>
 </head>
@@ -361,18 +102,17 @@
                 <a href="#install">Install</a>
                 <a href="#usage">Usage</a>
                 <a href="#github">GitHub</a>
-                <a href="#contributing">Contributing</a>
             </nav>
         </div>
     </header>
 
     <main id="main">
-        <!-- HERO -->
+        <!-- HERO (no demo) -->
         <section class="hero">
             <div class="container">
                 <div class="hero-text">
-                    <h2>AI‑Accelerated <span class="highlight">nmap</span> Wrapper</h2>
-                    <p>Lightning‑fast port discovery with masscan, deep inspection with nmap — all in one tool, for networks you're authorized to test.</p>
+                    <h2>Ai‑Accelerated <span class="highlight">  Scanning </span> Wrapper </h2>
+                    <p>Lightning-fast port discovery with masscan, deep inspection with nmap — all in one tool, for networks you're authorized to test.</p>
                     <div class="cta">
                         <a href="#install" class="btn primary">Install Now</a>
                         <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner" class="btn secondary" target="_blank" rel="noopener noreferrer">View on GitHub</a>
@@ -516,6 +256,7 @@ sudo chmod +x /usr/local/bin/knock</code></pre>
                     <h3>Dependencies</h3>
                     <p><strong>nmap</strong> is required; <strong>masscan</strong> is strongly recommended for the speed boost.</p>
                     <pre><code>sudo apt update && sudo apt install nmap masscan -y</code></pre>
+
                 </div>
             </div>
         </section>
@@ -626,32 +367,11 @@ sudo chmod +x /usr/local/bin/knock</code></pre>
                 </div>
             </div>
         </section>
-
-        <!-- CONTRIBUTING -->
-        <section id="contributing" class="section-page contributing">
-            <div class="container">
-                <div class="content">
-                    <h2>Contributing</h2>
-                    <p>We welcome contributions! Feel free to open issues, submit pull requests, or suggest new features.</p>
-                    <p style="margin-top: 1rem;">
-                        Please read our <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing Guidelines</a> before getting started.
-                    </p>
-                    <p style="margin-top: 1rem;">
-                        <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner/issues" target="_blank" rel="noopener noreferrer" class="btn secondary" style="display: inline-block; padding: 0.6rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; background: #30363d; color: #c9d1d9; transition: background 0.2s;">Report an Issue</a>
-                    </p>
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- FOOTER -->
     <footer>
         <div class="container">
-            <div class="social">
-                <a href="https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner" target="_blank" rel="noopener noreferrer" aria-label="GitHub">🐙 GitHub</a>
-                <a href="#" aria-label="Twitter">🐦 Twitter</a>
-                <a href="#" aria-label="Discord">💬 Discord</a>
-            </div>
             <p>&copy; 2026 KNOCK Project. Licensed under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT</a>.</p>
             <p>Built for the security community.</p>
         </div>
@@ -660,11 +380,11 @@ sudo chmod +x /usr/local/bin/knock</code></pre>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Mobile nav toggle
-            const toggle = document.getElementById('navToggle');
-            const nav = document.getElementById('primaryNav');
+            var toggle = document.getElementById('navToggle');
+            var nav = document.getElementById('primaryNav');
             if (toggle && nav) {
                 toggle.addEventListener('click', function () {
-                    const isOpen = nav.classList.toggle('open');
+                    var isOpen = nav.classList.toggle('open');
                     toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                 });
                 nav.querySelectorAll('a').forEach(function (link) {
@@ -675,9 +395,9 @@ sudo chmod +x /usr/local/bin/knock</code></pre>
                 });
             }
 
-            // Copy-to-clipboard on every code block
+            // Copy-to-clipboard on every code block (robust version)
             document.querySelectorAll('pre').forEach(function (pre) {
-                const btn = document.createElement('button');
+                var btn = document.createElement('button');
                 btn.className = 'copy-btn';
                 btn.type = 'button';
                 btn.textContent = 'Copy';
@@ -685,10 +405,11 @@ sudo chmod +x /usr/local/bin/knock</code></pre>
                 pre.appendChild(btn);
 
                 btn.addEventListener('click', function () {
-                    const code = pre.querySelector('code');
-                    const text = code ? code.innerText : pre.innerText;
+                    // Get text from the <code> element inside, or fallback to pre text
+                    var codeEl = pre.querySelector('code');
+                    var text = codeEl ? codeEl.innerText : pre.innerText;
 
-                    const finish = function () {
+                    var finish = function () {
                         btn.textContent = 'Copied!';
                         btn.classList.add('copied');
                         setTimeout(function () {
@@ -708,7 +429,7 @@ sudo chmod +x /usr/local/bin/knock</code></pre>
             });
 
             function fallbackCopy(text, done) {
-                const textarea = document.createElement('textarea');
+                var textarea = document.createElement('textarea');
                 textarea.value = text;
                 textarea.style.position = 'fixed';
                 textarea.style.opacity = '0';
@@ -716,11 +437,12 @@ sudo chmod +x /usr/local/bin/knock</code></pre>
                 textarea.select();
                 try {
                     document.execCommand('copy');
+                    done();
                 } catch (err) {
-                    // Silently ignore
+                    // Silently ignore clipboard errors
+                    done(); // still reset the button
                 }
                 document.body.removeChild(textarea);
-                done();
             }
         });
     </script>
