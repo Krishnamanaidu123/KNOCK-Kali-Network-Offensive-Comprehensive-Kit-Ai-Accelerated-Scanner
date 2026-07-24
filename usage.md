@@ -105,16 +105,23 @@ text
 ╚════════════════════════════════════════════════════════════════╝
 
 [SMART] Running masscan for 10.0.2.11...
+
 [SMART] Open ports discovered: 22,80,443
+
 [SMART] Running nmap on 10.0.2.11...
+
 ─── Open ports for 10.0.2.11 ─────────────────────────────────────
 22     tcp       OPEN       ssh          OpenSSH 8.2p1 Ubuntu 4ubuntu0.5
 80     tcp       OPEN       http         Apache httpd 2.4.41
 443    tcp       OPEN       https        nginx/1.18.0
 ────────────────────────────────────────────────────────────────────
+
 Example 2: Ping sweep
+
 bash
 $ KNOCK --ai -sn 10.0.2.0/24
+
+
 Output:
 
 text
