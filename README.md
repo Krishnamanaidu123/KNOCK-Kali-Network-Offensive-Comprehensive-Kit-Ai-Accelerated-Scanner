@@ -2,7 +2,7 @@
 
 is a powerful, AI‑accelerated wrapper around `nmap` that uses `masscan` to **dramatically speed up scans**. It first discovers open ports in seconds, then runs `nmap` **only on those ports** – all while keeping **every single nmap feature** available.
 
-![KNOCK Logo](https://via.placeholder.com/800x200/0d1117/58a6ff?text=KNOCK+-+Kali+Network+Offensive+Comprehensive+Kit%0AAdvanced+Ai+Scanning)
+![KNOCK Logo](sandbox:/mnt/data/ChatGPT%20Image%20Jul%2025%2C%202026%2C%2012_07_17%20PM.png)
 *Replace this with your actual logo/ASCII art.*
 
 ---
