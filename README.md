@@ -143,7 +143,7 @@ This project is licensed under the MIT License – see the LICENSE file for deta
 
 ## 🌐 Website
 
-Official website: **Official Website:** [KNOCK Documentation](https://krishnamanaidu123.github.io/KNOCK-site/) | [knock.org](https://knock.org)
+ **Official Website:** [knock.org](https://krishnamanaidu123.github.io/KNOCK-site/) 
 
 ## 🙏 Acknowledgements
 
