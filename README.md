@@ -143,7 +143,7 @@ This project is licensed under the MIT License – see the LICENSE file for deta
 
 ## 🌐 Website
 
-Official website: https://knock.org (placeholder – you can host your own there)
+Official website: `https://krishnamanaidu123.github.io/KNOCK-site/` | **[https://knock.org](https://knock.org)** (placeholder – you can host your own there)
 
 ## 🙏 Acknowledgements
 
