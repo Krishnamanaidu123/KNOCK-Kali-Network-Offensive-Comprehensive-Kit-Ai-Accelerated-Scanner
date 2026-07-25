@@ -2,7 +2,7 @@
 
 is a powerful, AI‑accelerated wrapper around `nmap` that uses `masscan` to **dramatically speed up scans**. It first discovers open ports in seconds, then runs `nmap` **only on those ports** – all while keeping **every single nmap feature** available.
 
-![KNOCK Logo](sandbox:/mnt/data/ChatGPT%20Image%20Jul%2025%2C%202026%2C%2012_07_17%20PM.png)
+![KNOCK Logo](https://kommodo.ai/i/voQdk5vQW5nMEAhi1Mmc)
 *Replace this with your actual logo/ASCII art.*
 
 ---
