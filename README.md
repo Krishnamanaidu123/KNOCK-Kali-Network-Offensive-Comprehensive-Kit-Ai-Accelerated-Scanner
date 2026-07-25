@@ -25,20 +25,16 @@ is a powerful, AI‑accelerated wrapper around `nmap` that uses `masscan` to **d
 ### One‑Liner (Linux / macOS)
 
 bash
-curl -sSL https://raw.githubusercontent.com/your-username/knock/main/install.sh | bash
-Manual
+curl -sSL https://raw.githubusercontent.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner/main/install.sh -o install.sh
+less install.sh        # review it
+bash install.sh
+Manual Installation
 bash
-git clone https://github.com/your-username/knock.git
-cd knock
-sudo cp knock.sh /usr/local/bin/KNOCK
-sudo chmod +x /usr/local/bin/KNOCK
+git clone https://github.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner.git
+cd KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai-Accelerated-Scanner
+sudo cp knock.sh /usr/local/bin/knock
+sudo chmod +x /usr/local/bin/knock
 Dependencies
-nmap (required)
-
-masscan (strongly recommended for AI mode)
-
-Install them on Debian/Ubuntu/Kali:
-
 bash
 sudo apt update && sudo apt install nmap masscan -y
 
