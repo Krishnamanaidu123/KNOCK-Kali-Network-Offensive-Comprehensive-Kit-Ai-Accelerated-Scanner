@@ -2,8 +2,7 @@
 
 is a powerful, AI‑accelerated wrapper around `nmap` that uses `masscan` to **dramatically speed up scans**. It first discovers open ports in seconds, then runs `nmap` **only on those ports** – all while keeping **every single nmap feature** available.
 
-![KNOCK Logo](<img width="1729" height="910" alt="image" src="https://github.com/user-attachments/assets/313a6397-a03c-40a7-8560-3c8ef7139a66" />
-)
+![KNOCK Logo](https://github.com/user-attachments/assets/313a6397-a03c-40a7-8560-3c8ef7139a66)
 *Replace this with your actual logo/ASCII art.*
 
 ---
