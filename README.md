@@ -75,7 +75,7 @@ Note: Scans requiring raw packets (-sS, -sA, -sW, -sM, -sI, -sO, -sY, -sZ, -f, -
 masscan performs a SYN scan on the specified ports (or top 1000 by default) at high speed.
 Open ports are cached (5 minutes) for fast re‑scans.
 nmap runs with your full set of options only on those open ports.
-Results are displayed with nmap’s normal output, but branded as KNOCK and with the URL https://knock.org.
+Results are displayed with nmap’s normal output, but branded as KNOCK and with the [knock.org](https://krishnamanaidu123.github.io/KNOCK-site/).
 
 
 
