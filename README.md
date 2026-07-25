@@ -1,6 +1,8 @@
-**KNOCK** (Kali Network Offensive Comprehensive Kit) is a powerful, AI‑accelerated wrapper around `nmap` that uses `masscan` to **dramatically speed up scans**. It first discovers open ports in seconds, then runs `nmap` **only on those ports** – all while keeping **every single nmap feature** available.
+## **KNOCK** (Kali Network Offensive Comprehensive Kit) 
 
-![KNOCK Logo](https://via.placeholder.com/800x200?text=KNOCK+AI+Scanner)  
+is a powerful, AI‑accelerated wrapper around `nmap` that uses `masscan` to **dramatically speed up scans**. It first discovers open ports in seconds, then runs `nmap` **only on those ports** – all while keeping **every single nmap feature** available.
+
+![KNOCK Logo](https://raw.githubusercontent.com/Krishnamanaidu123/KNOCK-Kali-Network-Offensive-Comprehensive-Kit-Ai)
 *Replace this with your actual logo/ASCII art.*
 
 ---
